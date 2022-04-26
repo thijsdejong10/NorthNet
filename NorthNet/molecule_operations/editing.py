@@ -18,7 +18,11 @@ def canonicalise(smiles):
 
     mol = Chem.MolFromSmiles(smiles)
 
-    return Chem.MolToSmiles(mol, isomericSmiles=True)
+    if mol:
+        return Chem.MolToSmiles(mol, isomericSmiles=True)
+    else:
+        print(f"Did not canonicalise {smiles}.")
+        return smiles
 
 
 def mirror_smiles(smiles):
