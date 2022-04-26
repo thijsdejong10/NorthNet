@@ -15,7 +15,9 @@ def canonicalise(smiles):
         Canonicalised smiles.
 
     """
+
     mol = Chem.MolFromSmiles(smiles)
+
     return Chem.MolToSmiles(mol, isomericSmiles=True)
 
 
