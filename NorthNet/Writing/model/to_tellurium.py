@@ -46,7 +46,7 @@ def to_tellurium(model):
         reaction_string += f"{lhs} {reaction_arrow} {rhs}; "
         reaction_string += f"{equation}"
 
-        tellurium_text += f"{reaction_string}\n"
+        tellurium_text += f"{reaction_string};\n"
 
     # Initial concentration state variables
     tellurium_text += "\n"
