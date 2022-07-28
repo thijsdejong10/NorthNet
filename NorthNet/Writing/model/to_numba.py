@@ -262,7 +262,7 @@ def to_numba(model, numba_decoration=None):
     if flow_profile_text != "":
         lines.append("")
         lines.append(flow_profile_text)
-        lines.append("    i = np.abs(flow_time - time).argmin()")
+        lines.append("    decay_constant = 2**(-dt/residence_time)")
         lines.append("")
 
     for m_text in model_text:

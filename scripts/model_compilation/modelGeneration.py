@@ -2,7 +2,7 @@ from NorthNet.Classes import Network
 from NorthNet.Classes import ModelWriter
 from NorthNet.Loading import load_network_from_reaction_list
 
-reaction_file = "exampleReactionList.txt"
+reaction_file = "./scripts/model_compilation/exampleReactionList.txt"
 
 with open(reaction_file, "r") as file:
     text = file.read()
@@ -17,6 +17,6 @@ model_text = model.write_to_module_text(numba_decoration="compile")
 
 print(model_text)
 
-quit()
-with open(f"models/{exp}_Model.py", "w") as file:
+#quit()
+with open(f"./scripts/model_compilation/test_model.py", "w") as file:
     file.write(model_text)
