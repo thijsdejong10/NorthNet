@@ -4,8 +4,8 @@ from numba.pycc import CC
 
 cc = CC('model_func')
 
-@cc.export("model_func", "float64[:](float64[:],float64,float64[:],float64)")
-def model_function(S,time, k, decay_constant):
+@cc.export("model_func", "float64[:](float64,float64[:],float64[:])")
+def model_function(time, S, k):
 
     P = np.zeros(len(S))
 
@@ -1160,18 +1160,22 @@ def model_function(S,time, k, decay_constant):
       29.172033116,29.184881933,29.197810087,29.210801826,29.223841322,
       29.236912689,29.250000000,29.250000000,29.250000000,29.250000000]]    )
 
+    decay_constant = 2**(-dt/residence_time)
 
-    P[0] = +(np.interp(time,flow_time,F_in[0]) - S[0])*(1-decay_constant)-k[0]*S[0]*S[1]-k[1]*S[0]*S[3]-S[0]*decay_constant
+    P[0] = +(np.interp(time,F_in[0,flow_time) - S[0])(1-decay_constant)-k[0]*S[0]*S[1]-k[1]*S[0]*S[3]-S[0]*decay_constant
     P[1] = +k[1]*S[0]*S[3]-k[0]*S[0]*S[1]-k[2]*S[4]*S[1]-k[3]*S[4]*S[1]-k[4]*S[7]*S[1]-S[1]*decay_constant
     P[2] = +k[0]*S[0]*S[1]-S[2]*decay_constant
-    P[3] = +k[1]*S[0]*S[3]+(np.interp(time,flow_time,F_in[1]) - S[1])*(1-decay_constant)-k[1]*S[0]*S[3]-S[3]*decay_constant
+    P[3] = +k[1]*S[0]*S[3]+(np.interp(time,F_in[1,flow_time) - S[1])(1-decay_constant)-k[1]*S[0]*S[3]-S[3]*decay_constant
     P[4] = +k[4]*S[7]*S[1]-k[2]*S[4]*S[1]-k[3]*S[4]*S[1]-S[4]*decay_constant
     P[5] = +k[2]*S[4]*S[1]-S[5]*decay_constant
     P[6] = +k[3]*S[4]*S[1]-S[6]*decay_constant
-    P[7] = +k[4]*S[7]*S[1]+(np.interp(time,flow_time,F_in[2]) - S[2])*(1-decay_constant)-k[4]*S[7]*S[1]-S[7]*decay_constant
+    P[7] = +k[4]*S[7]*S[1]+(np.interp(time,F_in[2,flow_time) - S[2])(1-decay_constant)-k[4]*S[7]*S[1]-S[7]*decay_constant
     P *= time
 
     return P
+
+def wrapper_function(time, S, k):
+    return model_function(time, S, k)
 
 species = {
 'O=C(CO)CO':0,

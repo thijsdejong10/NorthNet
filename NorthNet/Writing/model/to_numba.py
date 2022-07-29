@@ -226,17 +226,17 @@ def to_numba(model, numba_decoration=None):
 
     model_text = write_model_equation_text(model)
 
-    nf64 = "numba.float64"
-    numba_dec = ""
-    numba_dec += f"@numba.jit({nf64}[:]({nf64},{nf64}[:],{nf64}[:]),\n"
-    numba_dec += "\tlocals="
-
-    if flow_profile_text == "":
-        numba_dec += f"{{'P': {nf64}[:]}}"
-    else:
-        numba_dec += f"{{'P': {nf64}[:],'F': {nf64}[:,:],'I':{nf64}[:]}}"
-
-    numba_dec += ",nopython=True)"
+    # nf64 = "numba.float64"
+    # numba_dec = ""
+    # numba_dec += f"@numba.jit({nf64}[:]({nf64}[:],{nf64},{nf64}[:]),\n"
+    # numba_dec += "\tlocals="
+    #
+    # if flow_profile_text == "":
+    #     numba_dec += f"{{'P': {nf64}[:]}}"
+    # else:
+    #     numba_dec += f"{{'P': {nf64}[:],'F': {nf64}[:,:],'I':{nf64}[:]}}"
+    #
+    # numba_dec += ",nopython=True)"
 
     lines = ["import numpy as np"]
     if numba_decoration == "jit":
@@ -252,17 +252,16 @@ def to_numba(model, numba_decoration=None):
             mod_name = "model_func"
         lines.append(f"cc = CC('{mod_name}')\n")
         lines.append(
-            '@cc.export("model_func", "float64[:](float64,float64[:],float64[:])")'
+            '@cc.export("model_func", "float64[:](float64[:],float64,float64[:],float64)")'
         )
 
-    lines.append("def model_function(time, S, k):")
+    lines.append("def model_function(S,time, k, decay_constant):")
     lines.append("")
     lines.append("    P = np.zeros(len(S))")
 
     if flow_profile_text != "":
         lines.append("")
         lines.append(flow_profile_text)
-        lines.append("    decay_constant = 2**(-dt/residence_time)")
         lines.append("")
 
     for m_text in model_text:
@@ -272,9 +271,9 @@ def to_numba(model, numba_decoration=None):
     lines.append("")
     lines.append("    return P")
     lines.append("")
-    lines.append("def wrapper_function(time, S, k):")
-    lines.append("    return model_function(time, S, k)")
-    lines.append("")
+    # lines.append("def wrapper_function(S, time, k, dec):")
+    # lines.append("    return model_function(S, time, k)")
+    # lines.append("")
 
     lines.extend(write_variables_text(model))
 
