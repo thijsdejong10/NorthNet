@@ -133,7 +133,7 @@ class ModelWriter:
 
         # Tokens for flow terms
         # F_in is an (n x m) array of input concentrations over time
-        inflow_rates = {k: f"(np.interp(time,flow_time,F_in[{c}]) - S[{c}])*(1-decay_constant)" for c, k in enumerate(input_ids)}
+        inflow_rates = {k: f"np.interp(time,flow_time,F_in[{c}])*decay_constant" for c, k in enumerate(input_ids)}
         #total flow is presumed to be held constant. Though this is not an absolute truth it is a decent approximation.
         #In the event that it is not the old outflow_rates can be uncommented, however this code does not seem to properly acount for flow dynamics.
         #outflow_rates = {k: f"total_flow[{c},i]" for c, k in enumerate(output_ids)}
