@@ -252,17 +252,17 @@ def to_numba(model, numba_decoration=None):
             mod_name = "model_func"
         lines.append(f"cc = CC('{mod_name}')\n")
         lines.append(
-            '@cc.export("model_func", "float64[:](float64[:],float64,float64[:],float64)")'
+            '@cc.export("model_func", "float64[:](float64[:],float64,float64[:],float64,float64[:,:],float64[:])")'
         )
 
-    lines.append("def model_function(S,time, k, decay_constant):")
+    lines.append("def model_function(S,time, k, decay_constant,F_in,flow_time):")
     lines.append("")
     lines.append("    P = np.zeros(len(S))")
 
-    if flow_profile_text != "":
-        lines.append("")
-        lines.append(flow_profile_text)
-        lines.append("")
+    # if flow_profile_text != "":
+    #     lines.append("")
+    #     lines.append(flow_profile_text)
+    #     lines.append("")
 
     for m_text in model_text:
         lines.append(f"    {m_text}")
